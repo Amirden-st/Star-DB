@@ -11,13 +11,14 @@ const RandomPlanetView = ({ planet }) => {
         rotationPeriod = "-",
         diameter = "-",
     } = planet;
-
+    
+    
     return (
         <React.Fragment>
             <img
                 className="planet-image"
                 src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`}
-            />
+            /> 
             <div>
                 <h4>{name}</h4>
                 <ul className="list-group list-group-flush">
@@ -39,7 +40,7 @@ const RandomPlanetView = ({ planet }) => {
     );
 };
 
-class RandomPlanet extends React.Component {
+class RandomPlanet extends Component {
     state = {
         planet: {},
         loading: true,
@@ -60,7 +61,6 @@ class RandomPlanet extends React.Component {
     componentDidMount() {
         this.updatePlanet();
         this.updateInrervalId = setInterval(() => {
-            console.log("----Planet is updating----");
             this.updatePlanet();
         }, 10000);
     }
