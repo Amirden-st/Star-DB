@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import "./random-planet.css";
 import SwapiService from "../../services/swapi-service";
 import Spinner from "../spinner/spinner";
+import ErrorButton from "../error-button";
 
 const RandomPlanetView = ({ planet }) => {
     const {
@@ -11,14 +12,13 @@ const RandomPlanetView = ({ planet }) => {
         rotationPeriod = "-",
         diameter = "-",
     } = planet;
-    
-    
+
     return (
         <React.Fragment>
             <img
                 className="planet-image"
                 src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`}
-            /> 
+            />
             <div>
                 <h4>{name}</h4>
                 <ul className="list-group list-group-flush">
@@ -35,6 +35,7 @@ const RandomPlanetView = ({ planet }) => {
                         <span>{diameter}</span>
                     </li>
                 </ul>
+                <ErrorButton />
             </div>
         </React.Fragment>
     );

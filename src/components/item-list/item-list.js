@@ -1,41 +1,53 @@
 import React, { Component } from "react";
-import SwapiService from "../../services/swapi-service";
 import Spinner from "../spinner/spinner";
 import "./item-list.css";
 
-export default class ItemList extends Component {
-    state = {
-        people: null,
-    };
-
-    swapi = new SwapiService();
-
-    componentDidMount() {
-        this.swapi.getAllPeople().then((people) => {
-            this.setState({ people });
+class ItemList extends Component {
+    renderItems(arr) {
+        return arr.map((item) => {
+            const { id } = item;
+            const label = this.props.children(item);
+            return (
+                <li
+                    className="list-group-item"
+                    key={id}
+                    onClick={() => {
+                        this.props.onClick(id);
+                    }}
+                >
+                    {label}
+                </li>
+            );
         });
     }
 
     render() {
-        if (!this.state.people ) {
-            return <Spinner />;
-        }
-
         return (
             <ul className="item-list list-group">
-                {this.state.people.map((person) => {
-                    return (
-                        <li
-                            className="list-group-item"
-                            onClick={() => {
-                                this.props.onClick(person.id);
-                            }}
-                        >
-                            {person.name}
-                        </li>
-                    );
-                })}
+                {this.renderItems(this.props.data)}
             </ul>
         );
     }
 }
+
+const withData = (View) => {
+    return class extends Component {
+        state = {
+            data: null,
+        };
+
+        componentDidMount() {
+            this.props.getData().then((data) => {
+                this.setState({ data });
+            });
+        }
+        render() {
+            if (!this.state.data) {
+                return <Spinner />;
+            }
+            return <View {...this.props} data={this.state.data} />;
+        }
+    };
+};
+
+export default withData(ItemList);
