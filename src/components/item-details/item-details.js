@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import SwapiService from "../../services/swapi-service";
 import ErrorButton from "../error-button";
 import Spinner from "../spinner/spinner";
 
@@ -17,7 +16,7 @@ const Record = ({ item, field, label }) => {
 export { Record };
 
 const ItemDetailsView = ({ item, image, records }) => {
-    const { id, name, gender, birthYear, eyeColor } = item;
+    const { name } = item;
     return (
         <React.Fragment>
             <img className="person-image" src={image} />
@@ -42,8 +41,6 @@ export default class ItemDetails extends Component {
         item: null,
         image: null,
     };
-
-    swapi = new SwapiService();
 
     componentDidMount() {
         this.updateItem();

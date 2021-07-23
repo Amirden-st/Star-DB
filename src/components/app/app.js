@@ -1,14 +1,30 @@
 import React from "react";
 
+import {
+    SwapiServiceProvider,
+    SwapiServiceConsumer,
+} from "../swapi-service-context";
+
 import Header from "../header";
 import RandomPlanet from "../random-planet";
 import SwapiService from "../../services/swapi-service";
 import PeoplePage from "../people-page";
+import DummySwapiService from "../../services/dummy-swapi-service";
 
-import "./app.css";
 import ErrorBoundry from "../error-boundry";
 import Row from "../row";
 import ItemDetails, { Record } from "../item-details/item-details";
+import {
+    PersonList,
+    PlanetList,
+    StarshipList,
+    PersonDetails,
+    PlanetDetails,
+    StarshipDetails,
+} from "../sw-components";
+
+import "./app.css";
+import ErrorIndicator from "../error-indicator";
 
 class App extends React.Component {
     state = {
@@ -24,26 +40,20 @@ class App extends React.Component {
 
     render() {
         if (this.state.hasError) {
-            return <h1>Error occured</h1>;
+            return <ErrorIndicator />;
         }
 
-        const personDetails = (
-            <ItemDetails
-                itemId={11}
-                getData={this.swapi.getPerson}
-                getImageUrl={this.swapi.getPersonImage}
-            >
-                <Record field="gender" label="Gender" />
-                <Record field="eyeColor" label="Eye Color" />
-            </ItemDetails>
-        );
-        const itemList = <PeoplePage />;
         return (
             <ErrorBoundry>
-                <div>
-                    <Header />
-                    <Row left={personDetails} right={itemList} />
-                </div>
+                <SwapiServiceProvider value={this.swapi}>
+                    <div className="stardb-app">
+                        <Header />
+                        <PersonDetails itemId="1" />
+                        <PersonList />
+                        <PlanetList />
+                        <StarshipList />
+                    </div>
+                </SwapiServiceProvider>
             </ErrorBoundry>
         );
     }
