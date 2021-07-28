@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import SwapiService from "../../services/swapi-service";
+import ErrorBoundry from "../error-boundry";
+import ErrorButton from "../error-button";
 import Spinner from "../spinner/spinner";
 
 import "./person-details.css";
@@ -66,6 +68,13 @@ export default class PersonDetails extends Component {
             <Spinner />
         );
 
-        return <div className="person-details card">{content}</div>;
+        return (
+            <ErrorBoundry>
+                <div className="person-details card">
+                    {content}
+                    <ErrorButton />
+                </div>
+            </ErrorBoundry>
+        );
     }
 }
