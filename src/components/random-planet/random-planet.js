@@ -1,8 +1,8 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import "./random-planet.css";
-import SwapiService from "../../services/swapi-service";
 import Spinner from "../spinner/spinner";
 import ErrorButton from "../error-button";
+import { withSwapiService } from "../hoc-helper";
 
 const RandomPlanetView = ({ planet }) => {
     const {
@@ -41,44 +41,37 @@ const RandomPlanetView = ({ planet }) => {
     );
 };
 
-class RandomPlanet extends Component {
-    state = {
-        planet: {},
-        loading: true,
-    };
 
-    swapi = new SwapiService();
+const RandomPlanet = ({ swapiService: swapi }) => {
+    const [planet, setPlanet] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    updatePlanet = () => {
+    const updatePlanet = () => {
         const randomId = Math.floor(Math.random() * 20) + 1;
-        this.swapi.getPlanet(randomId).then((data) => {
-            this.setState({
-                planet: data,
-                loading: false,
-            });
+        setLoading(true);
+        swapi.getPlanet(randomId).then((planet) => {
+            setPlanet(planet);
+            setLoading(false);
         });
     };
 
-    componentDidMount() {
-        this.updatePlanet();
-        this.updateInrervalId = setInterval(() => {
-            this.updatePlanet();
-        }, 10000);
-    }
+    useEffect(() => {
+        updatePlanet();
+        const intervalId = setInterval(() => {
+            updatePlanet();
+        }, 8000);
+        return () => {
+            clearInterval(intervalId);
+        };
+    }, []);
 
-    componentWillUnmount() {
-        clearInterval(this.updateInrervalId);
-    }
+    const content = loading ? (
+        <Spinner />
+    ) : (
+        <RandomPlanetView planet={planet} />
+    );
 
-    render = () => {
-        const content = this.state.loading ? (
-            <Spinner />
-        ) : (
-            <RandomPlanetView planet={this.state.planet} />
-        );
+    return <div className="random-planet jumbotron rounded">{content}</div>;
+};
 
-        return <div className="random-planet jumbotron rounded">{content}</div>;
-    };
-}
-
-export default RandomPlanet;
+export default withSwapiService(RandomPlanet);

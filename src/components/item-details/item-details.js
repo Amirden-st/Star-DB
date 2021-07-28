@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 import ErrorButton from "../error-button";
 import Spinner from "../spinner/spinner";
 
@@ -36,45 +36,29 @@ const ItemDetailsView = ({ item, image, records }) => {
     );
 };
 
-export default class ItemDetails extends Component {
-    state = {
-        item: null,
-        image: null,
-    };
+const ItemDetails = ({ itemId, getData, getImageUrl, children }) => {
+    const [item, setItem] = useState(null);
+    const [image, setImage] = useState(null);
 
-    componentDidMount() {
-        this.updateItem();
-    }
-
-    componentDidUpdate(prevProps) {
-        if (this.props.itemId !== prevProps.itemId) {
-            this.setState({ item: null });
-            this.updateItem();
-        }
-    }
-
-    updateItem() {
-        const { itemId, getData, getImageUrl } = this.props;
-        if (!itemId) {
-            return;
-        }
+    useEffect(() => {
         getData(itemId).then((item) => {
-            this.setState({ item, image: getImageUrl(item) });
+            setImage(getImageUrl(item));
+            setItem(item);
         });
-    }
+        
+    }, [itemId]);
 
-    render() {
-        const { item, image } = this.state;
-        const content = item ? (
-            <ItemDetailsView
-                records={this.props.children}
-                item={item}
-                image={image}
-            />
-        ) : (
-            <Spinner />
-        );
+    const content = item ? (
+        <ItemDetailsView
+            records={children}
+            item={item}
+            image={image}
+        />
+    ) : (
+        <Spinner />
+    );
 
-        return <div className="person-details card">{content}</div>;
-    }
-}
+    return <div className="person-details card">{content}</div>;
+};
+
+export default ItemDetails;

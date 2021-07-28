@@ -1,27 +1,21 @@
-import React, { Component } from "react";
+import React, { Component, useState, useEffect } from "react";
 import Spinner from "../spinner";
-import ErrorIndicator from "../error-indicator";
 
 const withData = (View, getData) => {
-    return class extends Component {
-        state = {
-            data: null,
-        };
+    return (props) => {
+        const [data, setData] = useState(null);
 
-        componentDidMount() {
-            getData()
-                .then((data) => {
-                    this.setState({ data });
-                })
-                .catch(this.setState({ hasError: true }));
+        useEffect(() => {
+            getData().then((data) => {
+                setData(data);
+            });
+        }, []);
+
+        if (!data) {
+            return <Spinner />;
         }
-        render() {
-            if (!this.state.data) {
-                return <Spinner />;
-            }
-            return <View {...this.props} data={this.state.data} />;
-        }
-    };  
+        return <View {...props} data={data} />;
+    };
 };
 
 export default withData;

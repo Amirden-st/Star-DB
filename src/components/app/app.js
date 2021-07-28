@@ -24,39 +24,24 @@ import {
 } from "../sw-components";
 
 import "./app.css";
-import ErrorIndicator from "../error-indicator";
 
-class App extends React.Component {
-    state = {
-        personId: 3,
-        hasError: false,
-    };
+const App = () => {
+    const swapi = new SwapiService();
 
-    swapi = new SwapiService();
-
-    componentDidCatch() {
-        this.setState({ hasError: true });
-    }
-
-    render() {
-        if (this.state.hasError) {
-            return <ErrorIndicator />;
-        }
-
-        return (
-            <ErrorBoundry>
-                <SwapiServiceProvider value={this.swapi}>
-                    <div className="stardb-app">
-                        <Header />
-                        <PersonDetails itemId="1" />
-                        <PersonList />
-                        <PlanetList />
-                        <StarshipList />
-                    </div>
-                </SwapiServiceProvider>
-            </ErrorBoundry>
-        );
-    }
-}
+    return (
+        <ErrorBoundry>
+            <SwapiServiceProvider value={swapi}>
+                <div className="stardb-app">
+                    <Header />
+                    <RandomPlanet />
+                    <PersonDetails itemId="3" />
+                    <PersonList />
+                    <PlanetList />
+                    <StarshipList />
+                </div>
+            </SwapiServiceProvider>
+        </ErrorBoundry>
+    );
+};
 
 export default App;
