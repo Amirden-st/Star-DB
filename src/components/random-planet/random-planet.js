@@ -1,24 +1,25 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
+import PropTypes from "prop-types";
+
 import "./random-planet.css";
 import Spinner from "../spinner/spinner";
 import ErrorButton from "../error-button";
 import { withSwapiService } from "../hoc-helper";
+import ErrorIndicator from "../error-indicator";
+import { PlanetDetails } from "../sw-components";
 
-const RandomPlanetView = ({ planet }) => {
+const RandomPlanetView = ({ data, img }) => {
     const {
         id = "-",
         name = "-",
         population = "-",
         rotationPeriod = "-",
         diameter = "-",
-    } = planet;
+    } = data;
 
     return (
         <React.Fragment>
-            <img
-                className="planet-image"
-                src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`}
-            />
+            <img className="planet-image" src={img} alt="Planet" />
             <div>
                 <h4>{name}</h4>
                 <ul className="list-group list-group-flush">
@@ -41,37 +42,72 @@ const RandomPlanetView = ({ planet }) => {
     );
 };
 
+// const RandomPlanet = ({ getData, getImageUrl, updateInterval }) => {
+//     const [planet, setPlanet] = useState(null);
+//     const [loading, setLoading] = useState(true);
+//     const [error, setError] = useState(false);
 
-const RandomPlanet = ({ swapiService: swapi }) => {
-    const [planet, setPlanet] = useState(null);
-    const [loading, setLoading] = useState(true);
+//     const updatePlanet = () => {
+//         const randomId = Math.floor(Math.random() * 20) + 1;
+//         setLoading(true);
+//         getData(randomId)
+//             .then((planet) => {
+//                 setPlanet(planet);
+//                 setLoading(false);
+//             })
+//             .catch((e) => {
+//                 setError(true);
+//             });
+//     };
 
-    const updatePlanet = () => {
-        const randomId = Math.floor(Math.random() * 20) + 1;
-        setLoading(true);
-        swapi.getPlanet(randomId).then((planet) => {
-            setPlanet(planet);
-            setLoading(false);
-        });
-    };
+//     useEffect(() => {
+//         updatePlanet();
+//         const intervalId = setInterval(() => {
+//             updatePlanet();
+//         }, updateInterval);
+//         return () => {
+//             clearInterval(intervalId);
+//         };
+//     }, []);
 
+//     let content = loading ? (
+//         <Spinner />
+//     ) : (
+//         <RandomPlanetView data={planet} img={getImageUrl(planet)} />
+//     );
+
+//     content = error ? <ErrorIndicator /> : content;
+
+//     return <div className="random-planet jumbotron rounded">{content}</div>;
+// };
+
+const RandomPlanet = (props) => {
+    const [id, setId] = useState(1)
     useEffect(() => {
-        updatePlanet();
+        const randomId = Math.floor(Math.random() * 20) + 1;
         const intervalId = setInterval(() => {
-            updatePlanet();
-        }, 8000);
+            setId(randomId);
+        }, props.updateInterval);
         return () => {
             clearInterval(intervalId);
         };
-    }, []);
-
-    const content = loading ? (
-        <Spinner />
-    ) : (
-        <RandomPlanetView planet={planet} />
-    );
-
-    return <div className="random-planet jumbotron rounded">{content}</div>;
+    });
+    return <PlanetDetails {...props} itemId={id} />;
 };
 
-export default withSwapiService(RandomPlanet);
+const mapMethodsToProps = ({ getPlanet, getPlanetImage }) => {
+    return {
+        getData: getPlanet,
+        getImageUrl: getPlanetImage,
+    };
+};
+
+RandomPlanet.defaultProps = {
+    updateInterval: 8000,
+};
+
+RandomPlanet.propTypes = {
+    updateInterval: PropTypes.number,
+};
+
+export default RandomPlanet;
