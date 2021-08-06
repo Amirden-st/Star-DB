@@ -1,16 +1,16 @@
-import React, { useState } from "react";
+import React from "react";
+import { withRouter } from "react-router-dom";
 import Row from "../row";
 import { PlanetDetails, PlanetList } from "../sw-components";
 
-const PlanetsPage = () => {
-    const [id, setId] = useState(1);
-
+const PlanetsPage = ({ history, match }) => {
+    const { id } = match.params;
     return (
         <Row
-            left={<PlanetList onClick={(id) => setId(id)} />}
+            left={<PlanetList onClick={(id) => history.push(id)} />}
             right={<PlanetDetails itemId={id} />}
         />
     );
 };
 
-export default PlanetsPage
+export default withRouter(PlanetsPage);

@@ -10,6 +10,7 @@ const PersonDetails = ({ itemId, getData, getImageUrl }) => {
             getImageUrl={getImageUrl}
         >
             <Record field="gender" label="Gender" />
+            <Record field="birthYear" label="Birth Year" />
             <Record field="eyeColor" label="Eye Color" />
         </ItemDetails>
     );

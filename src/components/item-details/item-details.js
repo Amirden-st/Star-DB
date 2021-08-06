@@ -27,7 +27,6 @@ const ItemDetailsView = ({ item, image, records }) => {
                     {React.Children.map(records, (record) => {
                         return React.cloneElement(record, { item });
                     })}
-                    <ErrorButton />
                 </ul>
             </div>
         </React.Fragment>

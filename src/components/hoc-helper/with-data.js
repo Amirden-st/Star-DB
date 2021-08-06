@@ -7,8 +7,11 @@ const withData = (View) => {
         const [data, setData] = useState(null);
         const [error, setError] = useState(false);
         
+        
         useEffect(() => {
-            props.getData()
+            
+            props
+                .getData()
                 .then((data) => {
                     setData(data);
                 })

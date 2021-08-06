@@ -17,7 +17,11 @@ import {
 
 import "./app.css";
 
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import {
+    BrowserRouter as Router,
+    Route,
+    Switch,
+} from "react-router-dom";
 import { StarshipDetails } from "../sw-components";
 
 const App = () => {
@@ -27,48 +31,58 @@ const App = () => {
     return (
         <ErrorBoundry>
             <SwapiServiceProvider value={swapi}>
-                <Switch>
+                <Router>
                     <div className="stardb-app">
                         <Header />
-                        <RandomPlanet />
-                        <Route
-                            path="/"
-                            render={() => <h2>Welcome to StarDB</h2>}
-                            exact
-                        />
-                        <Route path="/people/:id?" component={PeoplePage} />
-                        <Route path="/planets" component={PlanetsPage} />
-                        <Route
-                            path="/starships"
-                            component={StarshipsPage}
-                            exact
-                        />
-                        <Route
-                            path="/starships/:id"
-                            render={({ match }) => {
-                                const { id } = match.params;
-                                return <StarshipDetails itemId={id} />;
-                            }}
-                        />
-                        <Route
-                            path="/secret"
-                            render={() => {
-                                return <SecretPage isLoggedIn={loggedIn} />;
-                            }}
-                        />
-                        <Route
-                            path="/login"
-                            render={() => {
-                                return (
-                                    <LoginPage
-                                        isLoggedIn={loggedIn}
-                                        onLogin={() => setLoggedIn(true)}
-                                    />
-                                );
-                            }}
-                        />
+                        <Switch>
+                            <Route path="/" exact>
+                                <React.Fragment>
+                                    <RandomPlanet />
+                                    <h2>Welcome to StarDB</h2>
+                                </React.Fragment>
+                            </Route>
+                            <Route path="/people/:id?" component={PeoplePage} />
+                            <Route
+                                path="/people"
+                                render={() => <h2>People</h2>}
+                            />
+                            <Route
+                                path="/planets/:id?"
+                                component={PlanetsPage}
+                            />
+                            <Route
+                                path="/starships"
+                                component={StarshipsPage}
+                                exact
+                            />
+                            <Route
+                                path="/starships/:id"
+                                render={({ match }) => {
+                                    const { id } = match.params;
+                                    return <StarshipDetails itemId={id} />;
+                                }}
+                            />
+                            <Route
+                                path="/secret"
+                                render={() => {
+                                    return <SecretPage isLoggedIn={loggedIn} />;
+                                }}
+                            />
+                            <Route
+                                path="/login"
+                                render={() => {
+                                    return (
+                                        <LoginPage
+                                            isLoggedIn={loggedIn}
+                                            onLogin={() => setLoggedIn(true)}
+                                        />
+                                    );
+                                }}
+                            />
+                            <Route render={() => <h2>404 Page Not Found</h2>} />
+                        </Switch>
                     </div>
-                </Switch>
+                </Router>
             </SwapiServiceProvider>
         </ErrorBoundry>
     );

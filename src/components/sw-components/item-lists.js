@@ -1,9 +1,6 @@
 import React from "react";
 import ItemList from "../item-list";
 import { withData, withSwapiService, withChildFunc, compose } from "../hoc-helper";
-import SwapiService from "../../services/swapi-service";
-
-const { getAllPeople, getAllPlanets, getAllStarships } = new SwapiService();
 
 const renderName = ({ name }) => {
     return <span>{name}</span>;
