@@ -1,1 +1,1 @@
-export { default } from "./error-button";
+export { default } from './error-button'

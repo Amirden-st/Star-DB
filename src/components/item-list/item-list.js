@@ -1,46 +1,34 @@
-import React, { Component } from "react";
-import SwapiService from "../../services/swapi-service";
-import ErrorBoundry from "../error-boundry";
-import ErrorButton from "../error-button";
-import Spinner from "../spinner/spinner";
-import "./item-list.css";
+import React from "react";
+import PropTypes from "prop-types";
 
-export default class ItemList extends Component {
-    state = {
-        people: null,
-    };
-
-    swapi = new SwapiService();
-
-    componentDidMount() {
-        this.swapi.getAllPeople().then((people) => {
-            this.setState({ people });
-        });
-    }
-
-    render() {
-        if (!this.state.people) {
-            return <Spinner />;
-        }
-
+const ItemList = ({ data, onClick, children }) => {
+    const items = data.map((item) => {
+        const { id } = item;
+        const label = children(item);
         return (
-            <ErrorBoundry>
-                <ul className="item-list list-group">
-                    {this.state.people.map((person) => {
-                        return (
-                            <li
-                                className="list-group-item"
-                                onClick={() => {
-                                    this.props.onClick(person.id);
-                                }}
-                            >
-                                {person.name}
-                            </li>
-                        );
-                    })}
-                    <ErrorButton />
-                </ul>
-            </ErrorBoundry>
+            <li
+                className="list-group-item"
+                key={id}
+                onClick={() => {
+                    onClick(id);
+                }}
+            >
+                {label}
+            </li>
         );
-    }
-}
+    });
+
+    return <ul className="item-list list-group">{items}</ul>;
+};
+                                
+ItemList.defaultProps = {
+    onClick: () => {},
+};
+
+ItemList.propTypes = {
+    onClick: PropTypes.func,
+    data: PropTypes.arrayOf(PropTypes.object).isRequired,
+    children: PropTypes.func.isRequired,
+};
+
+export default ItemList;
